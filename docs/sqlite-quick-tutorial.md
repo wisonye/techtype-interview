@@ -423,3 +423,45 @@ sqlite> .read db/reset-db.sql
 └────┴────────────┴───────────┴───────────┴─────┴─────────────────────┘
 ```
 
+</br>
+
+
+## How to enable cascade deletion
+
+### 1. You need to add `FOREIGN KEY (column) REFERENCES table (column) ON DELETE CASCADE`
+
+For example:
+
+```sqlite
+CREATE TABLE IF NOT EXISTS nodes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    parent_id INTEGER NULL,
+    path TEXT NOT NULL UNIQUE,
+    --
+    -- `parent_id` referenct to the same table `id` column with cascade deletion!!!
+    --
+    FOREIGN KEY (parent_id) REFERENCES nodes (id) ON DELETE CASCADE
+);
+```
+
+
+### 2. You MUST enable `foreign_keys` everytime after opening a database
+
+`foreign_keys` is disabled after opening a database by default!!!
+
+You MUST enable it everytime when opening a database:
+
+```sqlite
+--
+-- Make sure to enable it if you want cascade deletion!!!
+--
+PRAGMA foreign_keys = ON;
+
+--
+-- Now, the cascade deletion should work as expected:)
+--
+DELETE FROM nodes where id=7;
+```
+
+

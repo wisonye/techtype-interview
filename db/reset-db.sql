@@ -55,8 +55,16 @@ INSERT INTO properties(node_id, key, value) VALUES (4, 'Ports', 8.00);
 
 -- id: 5
 INSERT INTO nodes(name, path, parent_id) VALUES ('Storage', '/alphapc/storage', 1);
+
+-- id: 6
 INSERT INTO nodes(name, path, parent_id) VALUES ('SSD', '/alphapc/storage/ssd', 5);
+INSERT INTO properties(node_id, key, value) VALUES (6, 'Capacity', 1024.00);
+INSERT INTO properties(node_id, key, value) VALUES (6, 'WriteSpeed', 250.00);
+
+-- id: 7
 INSERT INTO nodes(name, path, parent_id) VALUES ('HDD', '/alphapc/storage/hdd', 5);
+INSERT INTO properties(node_id, key, value) VALUES (7, 'Capacity', 5120.00);
+INSERT INTO properties(node_id, key, value) VALUES (7, 'WriteSpeed', 1.724752);
 
 
 --
