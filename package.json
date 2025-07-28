@@ -4,7 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "temp": "tsx src/temp.ts"
+        "temp": "tsx src/temp.ts",
+        "reset-db": "cat db/reset-db.sql | sqlite3 db/demo.db"
     },
     "keywords": [],
     "author": "",
