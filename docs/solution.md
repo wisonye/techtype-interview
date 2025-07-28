@@ -171,7 +171,7 @@ I will write some test code for the data structure POC.
 
 ### 2. Learn SQLite and setup database init SQL
 
-Based on my experience, I believe that I should be able to play around with SQLite after fishing watching this 22mins tutorial: `SQLite Introduction - Beginners Guide to SQL and Databases` [https://www.youtube.com/watch?v=8Xyn8R9eKB8]. At least, it's enough to deal with this task:)
+Based on my experience, I believe that I should be able to play around with SQLite after finishing watching this 22-mins tutorial: `SQLite Introduction - Beginners Guide to SQL and Databases` [https://www.youtube.com/watch?v=8Xyn8R9eKB8]. At least, it's enough to deal with this task:)
 
 After that, I'll create a `reset-db` script in the `package.json` as part of the `How to run` step, which should be included in the `README.md` eventually.
 

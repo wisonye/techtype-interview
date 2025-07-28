@@ -1,0 +1,36 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        // Disallow features that require cross-file awareness
+        "isolatedModules": true,
+
+		// Use correct ESM import behavior
+        "esModuleInterop": true,
+
+		// Allow JSON modules to be imported
+        "resolveJsonModule": true,
+
+		// Allow JS files to be imported from TS and vice versa
+		"allowJs": true,
+
+        // Treat files as modules even if it doesn't use import/export
+        "moduleDetection": "force",
+
+        "module": "nodenext",
+
+        // "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+        // "target": "ES2022",
+        //
+        // "moduleResolution": "node16",
+        // "strict": true,
+        // "forceConsistentCasingInFileNames": true,
+        // "skipLibCheck": true,
+
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "types": ["node"],
+        "incremental": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
+}
