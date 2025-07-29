@@ -6,6 +6,7 @@ import { DatabaseSync, SQLOutputValue, StatementResultingChanges } from 'node:sq
 import { Node, Property } from './schema'
 import { Validation } from '../utils/validation'
 import { debug_log } from '../utils/logger'
+import { ErrorMessage } from './error_messages'
 
 //
 //
@@ -110,7 +111,7 @@ const get_node_with_pros_and_children = (db: DatabaseSync, node: Node): Node => 
 const query_node_by_path = (path: string): Node | DatabaseError => {
     debug_log(`query_node_by_path`, `path: ${path}`)
 
-    if (!Validation.is_valid_path(false, path)) return { error_message: `'path' is invalid.` }
+    if (!Validation.is_valid_path(false, path)) return { error_message: ErrorMessage.invalidNodePath }
 
     const db = open_database()
     try {
@@ -122,7 +123,7 @@ const query_node_by_path = (path: string): Node | DatabaseError => {
         const node = sql.get(path.trim().toLowerCase())
         debug_log(`query_node_by_path`, `node: ${JSON.stringify(node, null, 4)}`)
 
-        if (node === undefined) return { error_message: `NotFound`}
+        if (node === undefined) return { error_message: ErrorMessage.queryNodeNotFound }
 
         let result_node: Node = {
             id: node.id as number,
@@ -133,7 +134,7 @@ const query_node_by_path = (path: string): Node | DatabaseError => {
         return get_node_with_pros_and_children(db, result_node)
     } catch (error) {
         debug_log(`query_node_by_path`, `error: ${JSON.stringify(error, null, 4)}`)
-        return { error_message: `NotFound`}
+        return { error_message: ErrorMessage.queryNodeNotFound }
     } finally {
         debug_log(`query_node_by_path`, `database closed.`)
         db.close()
@@ -144,8 +145,8 @@ const query_node_by_path = (path: string): Node | DatabaseError => {
 // Create node by the given parent path
 //
 const create_node_with_parent_path = (name: string, parent_path?: string): Node | DatabaseError => {
-    if (!Validation.is_valid_name(name)) return { error_message: `'name' is invalid.` }
-    if (!Validation.is_valid_path(true, parent_path)) return { error_message: `'parent_path' is invalid.` }
+    if (!Validation.is_valid_name(name)) return { error_message: ErrorMessage.invalidNodeName }
+    if (!Validation.is_valid_path(true, parent_path)) return { error_message: ErrorMessage.invalidParentNodePath }
 
     const db = open_database()
     const fixed_name = name.trim()
@@ -163,7 +164,7 @@ const create_node_with_parent_path = (name: string, parent_path?: string): Node 
             parent_node = sql.get(fixed_parent_path)
             debug_log(`create_node_with_parent_path`, `parent_node: ${JSON.stringify(parent_node, null, 4)}`)
 
-            if (parent_node === undefined) return { error_message: `Parent node doesn't exists.`}
+            if (parent_node === undefined) return { error_message: ErrorMessage.parentNodeDoesntExists }
         }
 
         //
@@ -178,7 +179,7 @@ const create_node_with_parent_path = (name: string, parent_path?: string): Node 
         const exists_node = sql.get(node_path)
         debug_log(`create_node_with_parent_path`, `exists_node: ${JSON.stringify(exists_node, null, 4)}`)
 
-        if (exists_node !== undefined) return  { error_message: `Node exists.`}
+        if (exists_node !== undefined) return  { error_message: ErrorMessage.nodeExists}
 
         //
         // Create the node
@@ -206,7 +207,7 @@ const create_node_with_parent_path = (name: string, parent_path?: string): Node 
         return new_node
     } catch (error) {
         debug_log(`create_node_with_parent_path`, `error: ${JSON.stringify(error, null, 4)}`)
-        return { error_message: `Failed to create node.`}
+        return { error_message: ErrorMessage.failedToCreateNode }
     } finally {
         db.close()
         debug_log(`create_node_with_parent_path`, `database closed.`)
@@ -222,8 +223,8 @@ const add_props_to_node = (
 ): {} | DatabaseError => {
     debug_log(`add_props_to_node`, `props: ${JSON.stringify(props, null, 4)}`)
 
-    if (!Validation.is_valid_path(false, path)) return { error_message: `'path' is invalid.` }
-    if (props.length == 0) return { error_message: `'props' is empty.` }
+    if (!Validation.is_valid_path(false, path)) return { error_message: ErrorMessage.invalidNodePath }
+    if (props.length == 0) return { error_message: ErrorMessage.emptyProperties }
 
     const fixed_path = path.trim().toLowerCase()
     debug_log(`add_props_to_node`, `fixed_path: ${fixed_path}`)
@@ -237,7 +238,7 @@ const add_props_to_node = (
         const node = sql.get(fixed_path)
         debug_log(`add_props_to_node`, `node: ${JSON.stringify(node, null, 4)}`)
 
-        if (node === undefined) return { error_message: `Node doesn't exists.`}
+        if (node === undefined) return { error_message: ErrorMessage.nodeNonExists}
 
         //
         // Insert or update
@@ -263,7 +264,7 @@ const add_props_to_node = (
         return {}
     } catch (error) {
         debug_log(`add_props_to_node`, `error: ${JSON.stringify(error, null, 4)}`)
-        return { error_message: `Failed to add property to node`}
+        return { error_message: ErrorMessage.failedToAddProps }
     } finally {
         debug_log(`add_props_to_node`, `database closed.`)
         db.close()
@@ -273,7 +274,7 @@ const add_props_to_node = (
 //
 //
 //
-export const DatabaseDriver = {
+export const Database = {
     add_props_to_node,
     create_node_with_parent_path,
     query_node_by_path,

@@ -1,34 +1,35 @@
 import { default as assert } from 'node:assert'
 import { test } from 'node:test'
 
-import { DatabaseDriver, DatabaseError } from './sqlite_db'
+import { Database, DatabaseError } from './sqlite_db'
 import { Node } from './schema'
+import { ErrorMessage } from './error_messages'
 
 test(`query_node_by_path should fail with: 'path' is invalid.`, (_) => {
     const query_path = `alphapc`
-    let result = DatabaseDriver.query_node_by_path(query_path)
+    let result = Database.query_node_by_path(query_path)
     assert.equal('error_message' in result, true)
-    assert.equal((result as DatabaseError).error_message, `'path' is invalid.`)
+    assert.equal((result as DatabaseError).error_message, ErrorMessage.invalidNodePath)
 
-    result = DatabaseDriver.query_node_by_path(null)
+    result = Database.query_node_by_path(null)
     assert.equal('error_message' in result, true)
-    assert.equal((result as DatabaseError).error_message, `'path' is invalid.`)
+    assert.equal((result as DatabaseError).error_message, ErrorMessage.invalidNodePath)
 
-    result = DatabaseDriver.query_node_by_path(undefined)
+    result = Database.query_node_by_path(undefined)
     assert.equal('error_message' in result, true)
-    assert.equal((result as DatabaseError).error_message, `'path' is invalid.`)
+    assert.equal((result as DatabaseError).error_message, ErrorMessage.invalidNodePath)
 })
 
-test(`query_node_by_path should fail with: NotFound`, (_) => {
+test(`query_node_by_path should fail with: Query node not found.`, (_) => {
     const query_path = `/alphapc/notexists`
-    const result = DatabaseDriver.query_node_by_path(query_path)
+    const result = Database.query_node_by_path(query_path)
     assert.equal('error_message' in result, true)
-    assert.equal((result as DatabaseError).error_message, `NotFound`)
+    assert.equal((result as DatabaseError).error_message, ErrorMessage.queryNodeNotFound)
 })
 
 test(`query_node_by_path should work with path: /alphapc/storage`, (_) => {
     const query_path = `/alphapc/storage`
-    const result = DatabaseDriver.query_node_by_path(query_path)
+    const result = Database.query_node_by_path(query_path)
     assert.equal('id' in result, true)
 
     const node = result as Node
@@ -54,7 +55,7 @@ test(`query_node_by_path should work with path: /alphapc/storage`, (_) => {
 
 test(`query_node_by_path should work with path: /alphapc/processing`, (_) => {
     const query_path = `/alphapc/processing`
-    const result = DatabaseDriver.query_node_by_path(query_path)
+    const result = Database.query_node_by_path(query_path)
     assert.equal('id' in result, true)
 
     const node = result as Node
