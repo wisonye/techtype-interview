@@ -5,7 +5,10 @@
     "main": "index.js",
     "scripts": {
         "temp": "tsx src/temp.ts",
-        "reset-db": "cat db/reset-db.sql | sqlite3 db/demo.db"
+        "reset-db": "cat db/reset-db.sql | sqlite3 db/demo.db",
+        "dev": "tsc --noEmit && tsx --env-file=.env src/server.ts",
+        "watch": "tsx --watch src/server.ts",
+        "build": "rm -rf dist tsconfig.tsbuildinfo && npx tsc"
     },
     "keywords": [],
     "author": "",

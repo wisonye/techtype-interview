@@ -141,12 +141,13 @@ To keep it simple, I will choose SQLite for the following reasons:
 ### Project folder structure
 
 ```fish
-docs/           # The project docs like this one
-db/             # SQLite database files and init SQL to reset the database
-src/            # Typescript source code
-src/utils       # To hold some reuse functions
-src/server.ts   # The HTTP server
-src/temp.ts     # For the temporary isolated function test purposes by running `npm run temp`
+docs/               # The project docs like this one
+db/                 # SQLite database files and init SQL to reset the database
+src/                # Typescript source code
+src/utils           # To hold some reuse functions
+src/db/sqlite_db.ts # This module functions like an SQLite database driver, encapsulating all database layer operations.
+src/server.ts       # The HTTP server
+src/temp.ts         # For the temporary isolated function test purposes by running `npm run temp`
 ```
 
 

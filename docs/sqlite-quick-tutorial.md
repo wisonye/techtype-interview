@@ -425,7 +425,6 @@ sqlite> .read db/reset-db.sql
 
 </br>
 
-
 ## How to enable cascade deletion
 
 ### 1. You need to add `FOREIGN KEY (column) REFERENCES table (column) ON DELETE CASCADE`
@@ -463,5 +462,141 @@ PRAGMA foreign_keys = ON;
 --
 DELETE FROM nodes where id=7;
 ```
+
+
+</br>
+
+## `node:sqlite` module
+
+
+### Open and close database
+
+```typescript
+const DB_FILE = process.env.DB_FILE || './db/demo.db'
+const db = new DatabaseSync(DB_FILE)
+
+//
+// Enable cascade deletion.
+//
+db.exec(`PRAGMA foreign_keys = ON;`)
+
+db.close()
+```
+
+</br>
+
+### Execute or query SQL
+
+
+#### 1. you need to compiles a SQL statement into a prepared statement
+
+```typescript
+const sql = db.prepare('SELECT * FROM NODES;')
+```
+
+</br>
+
+#### 2. Execute a prepared statement and handle the result
+
+##### 2-1) Return all records
+
+```typescript
+
+const result = sql.all()
+console.log(`>>> [ query_nodes ] - result: ${JSON.stringify(result, null, 4)}`)
+```
+
+Output:
+
+```fish
+>>> [ query_nodes ] - result: [
+    {
+        "id": 1,
+        "name": "AlphaPC",
+        "parent_id": null,
+        "path": "/alphapc"
+    },
+    {
+        "id": 2,
+        "name": "Processing",
+        "parent_id": 1,
+        "path": "/alphapc/processing"
+    },
+    {
+        "id": 3,
+        "name": "CPU",
+        "parent_id": 2,
+        "path": "/alphapc/processing/cpu"
+    },
+    {
+        "id": 4,
+        "name": "Graphics",
+        "parent_id": 2,
+        "path": "/alphapc/processing/graphics"
+    },
+    {
+        "id": 5,
+        "name": "Storage",
+        "parent_id": 1,
+        "path": "/alphapc/storage"
+    },
+    {
+        "id": 6,
+        "name": "SSD",
+        "parent_id": 5,
+        "path": "/alphapc/storage/ssd"
+    },
+    {
+        "id": 7,
+        "name": "HDD",
+        "parent_id": 5,
+        "path": "/alphapc/storage/hdd"
+    }
+]
+```
+
+</br>
+
+
+##### 2-2) Only get the first record
+
+```typescript
+
+const result = sql.get()
+console.log(`>>> [ query_nodes ] - result: ${JSON.stringify(result, null, 4)}`)
+```
+
+Output:
+
+```fish
+>>> [ query_nodes ] - result: {
+    "id": 1,
+    "name": "AlphaPC",
+    "parent_id": null,
+    "path": "/alphapc"
+}
+```
+
+</br>
+
+
+##### 2-3) Return an object summarizing the resulting changes
+
+```typescript
+
+const result = sql.run()
+console.log(`>>> [ query_nodes ] - result: ${JSON.stringify(result, null, 4)}`)
+```
+
+Output:
+
+```fish
+>>> [ query_nodes ] - result: {
+    "lastInsertRowid": 0,
+    "changes": 0
+}
+```
+
+
 
 
