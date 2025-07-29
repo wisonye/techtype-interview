@@ -206,18 +206,75 @@ const create_node_with_parent_path = (name: string, parent_path?: string): Node 
         return new_node
     } catch (error) {
         debug_log(`create_node_with_parent_path`, `error: ${JSON.stringify(error, null, 4)}`)
-        return { error_message: `NotFound`}
+        return { error_message: `Failed to create node.`}
     } finally {
         db.close()
         debug_log(`create_node_with_parent_path`, `database closed.`)
     }
 }
 
+//
+// Add properties to the exists node
+//
+const add_props_to_node = (
+    path: string,
+    props: Array<{ key: string, value: number }>
+): {} | DatabaseError => {
+    debug_log(`add_props_to_node`, `props: ${JSON.stringify(props, null, 4)}`)
+
+    if (!Validation.is_valid_path(false, path)) return { error_message: `'path' is invalid.` }
+    if (props.length == 0) return { error_message: `'props' is empty.` }
+
+    const fixed_path = path.trim().toLowerCase()
+    debug_log(`add_props_to_node`, `fixed_path: ${fixed_path}`)
+
+    const db = open_database()
+    try {
+        //
+        // Query node
+        //
+        let sql = db.prepare('SELECT id, name, path FROM nodes WHERE path = ?;')
+        const node = sql.get(fixed_path)
+        debug_log(`add_props_to_node`, `node: ${JSON.stringify(node, null, 4)}`)
+
+        if (node === undefined) return { error_message: `Node doesn't exists.`}
+
+        //
+        // Insert or update
+        //
+        for (let index in props) {
+            // debug_log(`add_props_to_node`, `prop: ${JSON.stringify(props[index], null, 4)}`)
+            sql = db.prepare(`
+                INSERT INTO properties(node_id, key, value) VALUES(?, ?, ?)
+                ON CONFLICT(node_id, key) DO UPDATE SET value = ?;
+            `)
+            const insert_or_update_result = sql.run(
+                node.id,
+                props[index].key,
+                props[index].value,
+                props[index].value
+            )
+            debug_log(
+                `add_props_to_node`,
+                `insert_or_update_result: ${JSON.stringify(insert_or_update_result, null, 4)}`
+            )
+        }
+
+        return {}
+    } catch (error) {
+        debug_log(`add_props_to_node`, `error: ${JSON.stringify(error, null, 4)}`)
+        return { error_message: `Failed to add property to node`}
+    } finally {
+        debug_log(`add_props_to_node`, `database closed.`)
+        db.close()
+    }
+}
 
 //
 //
 //
 export const DatabaseDriver = {
+    add_props_to_node,
     create_node_with_parent_path,
     query_node_by_path,
     reset_db
