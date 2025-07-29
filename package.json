@@ -9,7 +9,7 @@
         "dev": "tsc --noEmit && tsx --env-file=.env src/server.ts",
         "watch": "tsx --watch src/server.ts",
         "build": "rm -rf dist tsconfig.tsbuildinfo && npx tsc",
-        "test": "tsx --test"
+        "test": "tsx  --test-concurrency=1 --test"
     },
     "keywords": [],
     "author": "",
