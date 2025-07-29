@@ -145,16 +145,25 @@ const query_node_by_path = (path: string): Node | DatabaseError => {
 // Create node by the given parent path
 //
 const create_node_with_parent_path = (name: string, parent_path?: string): Node | DatabaseError => {
-    if (!Validation.is_valid_name(name)) return { error_message: ErrorMessage.invalidNodeName }
-    if (!Validation.is_valid_path(true, parent_path)) return { error_message: ErrorMessage.invalidParentNodePath }
+    if (!Validation.is_valid_name(name)) return {
+        error_message: ErrorMessage.invalidNodeName
+    }
+    if (!Validation.is_valid_path(true, parent_path)) return {
+        error_message: ErrorMessage.invalidParentNodePath
+    }
 
     const db = open_database()
     const fixed_name = name.trim()
-    const fixed_parent_path = parent_path === undefined ? undefined : parent_path.trim().toLowerCase()
-    debug_log(`create_node_with_parent_path`, `fixed_name: ${fixed_name}, fixed_parent_path: ${fixed_parent_path}`)
+    const fixed_parent_path = parent_path === undefined ?
+        undefined :
+        parent_path.trim().toLowerCase()
+    debug_log(
+        `create_node_with_parent_path`,
+        `fixed_name: ${fixed_name},
+        fixed_parent_path: ${fixed_parent_path}`
+    )
 
     try {
-
         //
         // Query parent node
         //
@@ -162,9 +171,14 @@ const create_node_with_parent_path = (name: string, parent_path?: string): Node 
         if (fixed_parent_path !== undefined) {
             let sql = db.prepare('SELECT id FROM nodes WHERE path = ?;')
             parent_node = sql.get(fixed_parent_path)
-            debug_log(`create_node_with_parent_path`, `parent_node: ${JSON.stringify(parent_node, null, 4)}`)
+            debug_log(
+                `create_node_with_parent_path`,
+                `parent_node: ${JSON.stringify(parent_node, null, 4)}`
+            )
 
-            if (parent_node === undefined) return { error_message: ErrorMessage.parentNodeDoesntExists }
+            if (parent_node === undefined) return {
+                error_message: ErrorMessage.parentNodeDoesntExists
+            }
         }
 
         //
@@ -173,11 +187,17 @@ const create_node_with_parent_path = (name: string, parent_path?: string): Node 
         const node_path = fixed_parent_path === undefined ?
             `/${fixed_name}`.toLowerCase() :
             `${fixed_parent_path}/${fixed_name}`.toLowerCase()
-        debug_log(`create_node_with_parent_path`, `node_path: ${JSON.stringify(node_path, null, 4)}`)
+        debug_log(
+            `create_node_with_parent_path`,
+            `node_path: ${JSON.stringify(node_path, null, 4)}`
+        )
 
         let sql = db.prepare('SELECT id FROM nodes WHERE path = ?;')
         const exists_node = sql.get(node_path)
-        debug_log(`create_node_with_parent_path`, `exists_node: ${JSON.stringify(exists_node, null, 4)}`)
+        debug_log(
+            `create_node_with_parent_path`,
+            `exists_node: ${JSON.stringify(exists_node, null, 4)}`
+        )
 
         if (exists_node !== undefined) return  { error_message: ErrorMessage.nodeExists}
 
@@ -223,7 +243,9 @@ const add_props_to_node = (
 ): {} | DatabaseError => {
     debug_log(`add_props_to_node`, `props: ${JSON.stringify(props, null, 4)}`)
 
-    if (!Validation.is_valid_path(false, path)) return { error_message: ErrorMessage.invalidNodePath }
+    if (!Validation.is_valid_path(false, path)) return {
+        error_message: ErrorMessage.invalidNodePath
+    }
     if (props.length == 0) return { error_message: ErrorMessage.emptyProperties }
 
     const fixed_path = path.trim().toLowerCase()
