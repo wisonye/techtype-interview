@@ -6,7 +6,15 @@ import { Node } from './schema'
 
 test(`query_node_by_path should fail with: 'path' is invalid.`, (_) => {
     const query_path = `alphapc`
-    const result = DatabaseDriver.query_node_by_path(query_path)
+    let result = DatabaseDriver.query_node_by_path(query_path)
+    assert.equal('error_message' in result, true)
+    assert.equal((result as DatabaseError).error_message, `'path' is invalid.`)
+
+    result = DatabaseDriver.query_node_by_path(null)
+    assert.equal('error_message' in result, true)
+    assert.equal((result as DatabaseError).error_message, `'path' is invalid.`)
+
+    result = DatabaseDriver.query_node_by_path(undefined)
     assert.equal('error_message' in result, true)
     assert.equal((result as DatabaseError).error_message, `'path' is invalid.`)
 })
