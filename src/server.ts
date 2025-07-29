@@ -1,8 +1,8 @@
 import { DatabaseDriver } from "./db/sqlite_db"
 
 // const query_path = `/alphapc`
-// const query_path = `/alphapc/processing`
-const query_path = `/alphapc/storage`
+const query_path = `/alphapc/processing`
+// const query_path = `/alphapc/storage`
 // const query_path = `/alphapc/notexists`
 // const query_path = `alphapc`
 

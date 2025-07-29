@@ -2,7 +2,7 @@
 // This module functions like an SQLite database driver, encapsulating all database layer operations.
 //
 
-import { DatabaseSync, SQLOutputValue } from 'node:sqlite'
+import { DatabaseSync } from 'node:sqlite'
 import { Node, Property } from './schema'
 import { is_valid_Path } from '../utils/validation'
 import { debug_log } from '../utils/logger'

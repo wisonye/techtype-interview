@@ -8,7 +8,8 @@
         "reset-db": "cat db/reset-db.sql | sqlite3 db/demo.db",
         "dev": "tsc --noEmit && tsx --env-file=.env src/server.ts",
         "watch": "tsx --watch src/server.ts",
-        "build": "rm -rf dist tsconfig.tsbuildinfo && npx tsc"
+        "build": "rm -rf dist tsconfig.tsbuildinfo && npx tsc",
+        "test": "tsx --test"
     },
     "keywords": [],
     "author": "",
