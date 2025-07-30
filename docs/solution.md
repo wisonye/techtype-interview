@@ -8,6 +8,7 @@ To build a `NodeJS + Typescript` HTTP server which matches the following require
 ### Tech stacks
 - Typescript
 - Node TLS
+- Express
 - Any relational database
 
 </br>
